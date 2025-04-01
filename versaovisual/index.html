@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Bancário - Exclusão Mútua</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Sistema Bancário</h1>
+            <h2>Algoritmo de Exclusão Mútua Centralizado</h2>
+        </header>
+        
+        <div class="grid">
+            <!-- Painel de Controle -->
+            <div class="panel">
+                <h3 class="panel-title">Painel de Controle</h3>
+                <div class="form-group">
+                    <label for="clientId">Cliente</label>
+                    <select id="clientId">
+                        <option value="1">Cliente 1</option>
+                        <option value="2">Cliente 2</option>
+                        <option value="3">Cliente 3</option>
+                        <option value="4">Cliente 4</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="amount">Valor do Saque (R$)</label>
+                    <input type="number" id="amount" placeholder="Digite o valor">
+                </div>
+                <button id="withdrawBtn">Solicitar Saque</button>
+            </div>
+            
+            <!-- Status do Sistema -->
+            <div class="panel">
+                <h3 class="panel-title">Status do Sistema</h3>
+                <div class="balance">
+                    <p>Saldo Disponível:</p>
+                    <p class="balance-amount" id="balance">R$ 1000,00</p>
+                </div>
+                <div class="status" id="statusPanel">
+                    <div class="flex items-center">
+                        <div class="w-3 h-3 rounded-full bg-gray-400 mr-2"></div>
+                        <span class="font-medium">Seção Crítica Livre</span>
+                    </div>
+                </div>
+                <div>
+                    <p class="font-medium mb-2">Fila de Espera:</p>
+                    <div class="queue" id="queue">
+                        <p class="text-sm text-gray-500">Nenhum cliente na fila</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Histórico de Transações -->
+            <div class="panel">
+                <h3 class="panel-title">Histórico de Operações</h3>
+                <div id="transactions">
+                    <p class="text-sm text-gray-500 text-center py-4">Nenhuma operação registrada</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Legenda -->
+        <div class="panel">
+            <h4 class="font-medium text-gray-700 mb-2">Legenda do Protocolo:</h4>
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color color-primary"></div>
+                    <span>REQUEST (Solicitação)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color color-success"></div>
+                    <span>GRANT (Acesso Concedido)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color color-info"></div>
+                    <span>RELEASE (Liberação)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color color-warning"></div>
+                    <span>WAIT (Aguardando)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color color-danger"></div>
+                    <span>DENIED (Negado)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/script.js"></script>
+</body>
+</html>
