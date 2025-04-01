@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banco - Saque</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        input, button { margin: 10px; padding: 10px; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <h2>Sistema de Saque Bancário</h2>
+    <p>Digite seu ID e valor para saque:</p>
+    <input type="number" id="clienteId" placeholder="ID do Cliente" min="1">
+    <input type="number" id="valorSaque" placeholder="Valor do Saque" min="1">
+    <button onclick="solicitarSaque()">Solicitar Saque</button>
+    <p id="status"></p>
+
+    <script>
+        function solicitarSaque() {
+            let clienteId = document.getElementById("clienteId").value;
+            let valorSaque = document.getElementById("valorSaque").value;
+            let statusElem = document.getElementById("status");
+
+            if (!clienteId || !valorSaque) {
+                statusElem.innerText = "Preencha todos os campos!";
+                return;
+            }
+
+            fetch("http://localhost:3000/saque", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ clienteId: parseInt(clienteId), valor: parseInt(valorSaque) })
+            })
+            .then(response => response.json())
+            .then(data => {
+                statusElem.innerText = data.mensagem;
+            })
+            .catch(error => {
+                statusElem.innerText = "Erro ao conectar ao servidor.";
+                console.error("Erro:", error);
+            });
+        }
+    </script>
+</body>
+</html>
