@@ -1,46 +1,86 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Banco - Saque</title>
+    <title>Sistema de Saque</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
-        input, button { margin: 10px; padding: 10px; font-size: 16px; }
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        #mensagem {
+            margin-top: 10px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
-    <h2>Sistema de Saque Bancário</h2>
-    <p>Digite seu ID e valor para saque:</p>
-    <input type="number" id="clienteId" placeholder="ID do Cliente" min="1">
-    <input type="number" id="valorSaque" placeholder="Valor do Saque" min="1">
-    <button onclick="solicitarSaque()">Solicitar Saque</button>
-    <p id="status"></p>
+    <h2>Sistema de Saque</h2>
+    <input type="text" id="clienteId" placeholder="ID do Cliente">
+    <input type="number" id="valor" placeholder="Valor do Saque">
+    <button onclick="solicitarAcesso()">Solicitar Acesso</button>
+    <button id="saqueBtn" onclick="realizarSaque()" disabled>Realizar Saque</button>
+    <p id="mensagem"></p>
 
     <script>
-        function solicitarSaque() {
-            let clienteId = document.getElementById("clienteId").value;
-            let valorSaque = document.getElementById("valorSaque").value;
-            let statusElem = document.getElementById("status");
+        let acessoPermitido = false;
 
-            if (!clienteId || !valorSaque) {
-                statusElem.innerText = "Preencha todos os campos!";
-                return;
-            }
-
-            fetch("http://localhost:3000/saque", {
+        async function solicitarAcesso() {
+            const clienteId = document.getElementById("clienteId").value;
+            const valor = document.getElementById("valor").value;
+            
+            const response = await fetch("http://localhost:3000/request", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ clienteId: parseInt(clienteId), valor: parseInt(valorSaque) })
-            })
-            .then(response => response.json())
-            .then(data => {
-                statusElem.innerText = data.mensagem;
-            })
-            .catch(error => {
-                statusElem.innerText = "Erro ao conectar ao servidor.";
-                console.error("Erro:", error);
+                body: JSON.stringify({ clienteId, valor: parseFloat(valor) })
             });
+            const data = await response.json();
+            document.getElementById("mensagem").innerText = data.mensagem;
+            
+            if (data.status === "GRANT") {
+                acessoPermitido = true;
+                document.getElementById("saqueBtn").disabled = false;
+            }
+        }
+
+        async function realizarSaque() {
+            if (!acessoPermitido) return;
+            const clienteId = document.getElementById("clienteId").value;
+            const valor = document.getElementById("valor").value;
+            
+            const response = await fetch("http://localhost:3000/release", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ clienteId, valor: parseFloat(valor) })
+            });
+            const data = await response.json();
+            document.getElementById("mensagem").innerText = data.mensagem;
+            
+            acessoPermitido = false;
+            document.getElementById("saqueBtn").disabled = true;
         }
     </script>
 </body>
